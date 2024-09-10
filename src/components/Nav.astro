@@ -1,0 +1,109 @@
+---
+import { SITE } from "@config";
+
+import { iconPaths } from "@components/IconPaths";
+import Icon from "@components/Icon.astro";
+import ThemeToggle from '@components/ThemeToggle.astro'
+
+const isActiveNav = function (href: string): boolean {
+	return Astro.url.pathname === href || (href !== '/' && (Astro.url.pathname.startsWith(href) || Astro.url.pathname.startsWith(`/content${href}`))) 
+}
+
+/** Main menu items */
+const textLinks: { label: string; href: string; icon?: keyof typeof iconPaths }[] = [
+	{ label: '首页', href: '/', icon: 'home' },
+	{ label: '文章', href: '/docs/', icon: 'article' },
+  { label: '合集', href: '/series/', icon: 'series' },
+	{ label: '标签', href: '/tags/', icon: 'tag' },
+	// { label: '关于', href: '/about/', icon: 'about' },
+];
+---
+<nav class="flex flex-col md:flex-row md:items-center max-w-[1024px] m-auto px-4 py-2 text-2xl">
+  <div class="grow flex justify-between">
+    <a class="flex items-center gap-2 text-[--gray-0]" href="/">
+      <Icon icon="game-box" color="var(--accent-regular)" size="1.2em" gradient />
+      {SITE.title}
+    </a>
+		<menu-button class="flex items-center">
+			<template>
+				<button class="menu-button" aria-expanded="false">
+					<span class="sr-only">Menu</span>
+					<Icon icon="menu" />
+				</button>
+			</template>
+		</menu-button>
+  </div>
+  <div id="menu-content" class="flex flex-col md:flex-row items-start md:items-center">
+		<ul class="flex flex-col md:flex-row items-start md:items-center justify-center text-lg md:px-4 py-2">
+			{
+				textLinks.map(({ label, href, icon }) => (
+					<li>
+						<a
+							aria-current={Astro.url.pathname === href}
+							class:list={[
+								`${isActiveNav(href) ? 'active border-b-2 border-b-slate-300' : ''}`,
+								'link flex items-center justify-center px-2 py-1 text-[--gray-100] rounded',
+							]}
+							href={href}
+						>
+							{
+								icon && (
+									<Icon icon={icon} color="var(--gray-100)" size="1em" />
+								)
+							}
+							{label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+		<div class="theme-toggle">
+			<ThemeToggle />
+		</div>
+	</div>
+</nav>
+
+<script>
+	class MenuButton extends HTMLElement {
+		constructor() {
+			super();
+
+			// Inject menu toggle button when JS runs.
+			this.appendChild(this.querySelector('template')!.content.cloneNode(true));
+			const btn = this.querySelector('button')!;
+
+			// Hide menu (shown by default to support no-JS browsers).
+			const menu = document.getElementById('menu-content')!;
+			menu.style.display = 'none';
+			menu.hidden = true;
+			// Add "menu-content" class in JS to avoid covering content in non-JS browsers.
+			menu.classList.add('menu-content');
+
+			/** Set whether the menu is currently expanded or collapsed. */
+			const setExpanded = (expand: boolean) => {
+				btn.setAttribute('aria-expanded', expand ? 'true' : 'false');
+				menu.style.display = expand ? 'flex' : 'none';
+				menu.hidden = !expand;
+			};
+
+			// Toggle menu visibility when the menu button is clicked.
+			btn.addEventListener('click', () => setExpanded(menu.hidden));
+
+			// Hide menu button for large screens.
+			const handleViewports = (e: MediaQueryList | MediaQueryListEvent) => {
+				setExpanded(e.matches);
+				btn.hidden = e.matches;
+			};
+			const mediaQueries = window.matchMedia('(min-width: 48em)');
+			handleViewports(mediaQueries);
+			mediaQueries.addEventListener('change', handleViewports);
+		}
+	}
+	customElements.define('menu-button', MenuButton);
+</script>
+
+<!-- <style>
+	.link.active {
+		background: radial-gradient(var(--gradient-stop-2), var(--gradient-stop-2));
+	}
+</style> -->

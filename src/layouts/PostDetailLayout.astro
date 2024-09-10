@@ -1,0 +1,70 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Icon from '@components/Icon.astro';
+
+interface Props {
+	title: string;
+	date: string;
+	description?: string;
+	tags?: Array<string>;
+	readingTime: string;
+	words: string;
+}
+
+const { title, date, tags, readingTime, words }: Props = Astro.props;
+---
+<BaseLayout>
+	<script
+		is:inline
+		async
+		src="https://cdn.jsdelivr.net/npm/twikoo@1.6.36/dist/twikoo.all.min.js"
+		integrity="sha384-4KfOjEinLSkv1i1J8TzlkC/RTnuiLoR1OLerVgjEKoH5djYtbf7mzEFsz9p3nfuA"
+		crossorigin="anonymous">
+	</script>
+	<script is:inline defer src="//webviso.yestool.org/js/index.min.js"></script>
+	<div class="gap-20 font-sans">
+			<header class="pb-4">
+					<div class="flex items-center flex-col gap-2">
+            <div class="text-2xl md:text-2xl font-bold">{title}</div>
+            <div class="flex flex-col text-sm text-gray-400 md:flex-row md:gap-2">
+              <p class="flex items-center gap-1"><Icon icon="date" size="1.4rem" />{date}</p>
+							<p class="flex items-center gap-1"><Icon icon="card-word" size="1rem" />{words}</p>
+							<p class="flex items-center gap-1"><Icon icon="card-time" size="1rem" />{readingTime}</p>
+              <p class="flex items-center gap-1"><Icon icon="card-view-num" size="1rem" /><span id="page_pv">loading...</span></p>
+							<p class="flex items-center gap-1"><Icon icon="card-view-user" size="0.8rem" /><span id="page_uv">loading...</span></p>
+            </div>
+						<div class="flex flex-col text-sm text-gray-400 md:flex-row md:gap-2">
+            </div>
+            <div class="tags">
+              { tags && tags.length > 0 && tags.map((tag) => {
+								return <span class:list={[
+                      'inline-block m-1 px-2 py-[0.1rem] rounded-md bg-gray-200 text-xs text-gray-500'
+                    ]}>{tag}</span>
+							})}
+            </div>
+					</div>
+			</header>
+			<main class="py-8">
+				<article id="article" role="article"
+					class:list={[
+						'mx-auto max-w-3xl',
+						'prose prose-orange prose-sm prose-img:rounded-xl prose-li:list-disc prose-blockquote:border-l-2 prose-blockquote:border-l-gray-500',
+						'prose-a:underline prose-a:underline-offset-2',
+						'prose-code:bg-orange-400 prose-code:px-1',
+						'dark:prose-invert'
+					]}
+				>
+					<slot />
+				</article>
+				<div id="tcomment"></div>
+				<script>
+					// @ts-ignore
+					window.twikoo.init({
+						envId: 'https://ashsneotwokii.netlify.app/.netlify/functions/twikoo',
+						el: '#tcomment',
+						lang: 'zh-CN'
+					})
+				</script>
+			</main>
+	</div>
+</BaseLayout>

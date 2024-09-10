@@ -1,0 +1,68 @@
+---
+import Icon from '@components/Icon.astro'
+import { defaultCardHeadImg } from '@utils/image';
+  
+const defaultPic = await defaultCardHeadImg()
+
+interface Props {
+  directionRow?: boolean;
+  pic?: string;
+  title: string;
+  date?: string;
+  description?: string;
+  href?: string;
+  tags?: string[];
+}
+
+const { directionRow = true, pic, title, date, description, href, tags }: Props = Astro.props;
+
+---
+<a class:list={[
+  'group',
+  'flex gap-2 border-[1px] rounded-md box-border shadow-sm border-[--gray-900]',
+  'hover:cursor-pointer hover:scale-[.99] hover:bg-[var(--gray-800)]',
+  directionRow ? 'flex-col md:flex-row md:items-center' : 'flex-col',
+]} href={href}>
+  {
+    pic !== "" && (
+      <img class:list={[
+        'object-cover object-center rounded-md',
+        `${directionRow ? 'w-full h-32 md:w-1/5 md:h-full' : 'w-full h-32'}`,
+      ]} src={pic || defaultPic.default.src} alt="" />
+    )
+  }
+  <div class="grid p-1">
+    <span class="text-lg text-[--gray-0]">{title}</span>
+    {
+      date && (
+        <span class="flex items-center text-sm text-[--gray-200]">
+          <Icon icon="date" size="1.5rem" color="var(--gray-200)" />{date}
+        </span>
+      )
+    }
+    <!-- <AutoSpan content={description} className="text-[--gray-200] text-base max-h-24" /> -->
+    {
+      (
+        <span class:list={[
+          "card-desc overflow-hidden text-ellipsis text-base",
+          `${description ? 'text-[--gray-200]' : 'text-[--gray-400]'}`
+        ]}>{description === '' ? description : description || '作者很懒，没有留下任何说明'}</span>
+      )
+    }
+    {
+      tags && tags.length > 0 && (
+        <div>
+          {tags.map(tag => <span class="inline-block m-1 px-1 py-[0.1rem] rounded-sm bg-[--gray-900] group-hover:border-[--gray-800] text-[--gray-300] text-sm">{tag}</span>)}
+        </div>
+      )
+    }
+  </div>
+</a>
+
+<style>
+.card-desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+</style>

@@ -1,0 +1,31 @@
+---
+import type { GetStaticPaths } from "astro";
+import { type CollectionEntry } from "astro:content";
+
+import PostDetailLayout from "@layouts/PostDetailLayout.astro";
+import { collections } from '@content/config';
+import { getContents } from '@utils/content';
+
+export const getStaticPaths = (async () => {
+  const posts = await getContents();
+	return posts.map(post => {
+		return {
+			params: { slug: `/${post.collection}/${post.slug}`, nav: post.collection },
+			props: { entry: post }
+		}
+	});}) satisfies GetStaticPaths;
+
+type Props = {
+  entry: CollectionEntry<keyof typeof collections>;
+};
+
+const { entry }: Props = Astro.props;
+
+const { title, date, tags } = entry.data;
+
+const { Content, remarkPluginFrontmatter } = await entry.render();
+const { readingTime, words } = remarkPluginFrontmatter;
+---
+<PostDetailLayout title={title} date={date} readingTime={readingTime} words={words} tags={tags}>
+	<Content />
+</PostDetailLayout>

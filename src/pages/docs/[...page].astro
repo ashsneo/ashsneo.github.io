@@ -1,0 +1,43 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Pagination from "@components/Pagination.astro";
+import Card from "@components/Card.astro";
+import Panel from "@components/Panel.astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+
+  const posts: CollectionEntry<"docs">[] = await getCollection("docs");
+  const sorted = posts.sort((p1, p2) => {
+    return p1.data.date < p2.data.date ? 1 : -1;
+  })
+  return paginate(
+    sorted,
+    { pageSize: 10 }
+  );
+}) satisfies GetStaticPaths;
+
+type Props = {
+  page: Page<CollectionEntry<"docs">>;
+};
+
+const { page }: Props = Astro.props;
+---
+<BaseLayout>
+  <Panel items={page.data.length} title="文章列表">
+    {
+      page.data.length > 0 && page.data.map(({data, slug, collection}) => {
+        return <Card title={data.title}
+          date={data.date}
+          description={data.description}
+          href={`/content/${collection}/${slug}`}
+          // pic={data.headPic}
+          pic=""
+          tags={data.tags} />
+			})
+		}
+  </Panel>
+  <Pagination current={page.currentPage} total={page.lastPage} baseUrl="/docs" />
+</BaseLayout>

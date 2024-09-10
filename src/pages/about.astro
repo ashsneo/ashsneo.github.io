@@ -1,0 +1,24 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Panel from '@components/Panel.astro';
+---
+
+<BaseLayout>
+  <Panel items={1} title="文章分类" tIcon="type" tIconColor="var(--rose-400)">
+    <div class="p-6 bg-[--gray-900] text-lg text-[--gray-100]">
+      <div>虽然所有的文档本质上都是文章，但是还是做了区分：</div>
+      <div class="pl-4">· 合集：包含了成系列的文章；</div>
+      <div class="pl-4">· 项目：个人项目介绍文章；</div>
+      <div class="pl-4">· 文章：除以上分类之外的普通文章；</div>
+      <div>未来可能会包含其他类型的文章。</div>
+    </div>
+  </Panel>
+  <Panel items={1} title="站点结构" tIcon="structure" tIconColor="var(--rose-400)">
+    <div class="p-6 bg-[--gray-900] text-lg text-[--gray-100]">
+      <div>首页：主要包含所有置顶文章以及最新的10个文章(不区分类型)，可能包括其他模块如站点PV/UV统计，Banner轮播图等；</div>
+      <div>文章：所有未分类的文章列表；</div>
+      <div>合集：系列/合集列表；</div>
+      <div>标签：文章的标签列表；</div>
+    </div>
+  </Panel>
+</BaseLayout>

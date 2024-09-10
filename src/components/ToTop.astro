@@ -1,0 +1,27 @@
+---
+import Icon from "@components/Icon.astro";
+---
+
+<div id="backToTop" class="fixed bottom-16 md:bottom-32 right-6 md:right-12 opacity-0 transition-opacity duration-300 hidden">
+  <Icon icon="to-top" color="var(--accent-regular)" size="2.5em" gradient />
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const backToTopButton = document.getElementById('backToTop') || new HTMLElement();
+
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 300) {
+        backToTopButton.classList.remove('hidden');
+        backToTopButton.classList.add('opacity-100');
+      } else {
+        backToTopButton.classList.add('hidden');
+        backToTopButton.classList.remove('opacity-100');
+      }
+    });
+
+    backToTopButton.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>

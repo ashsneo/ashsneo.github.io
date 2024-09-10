@@ -1,0 +1,65 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { iconPaths } from '@components/IconPaths';
+
+interface Props {
+	icon: keyof typeof iconPaths;
+	size?: string;
+	color?: string;
+	gradient?: boolean;
+	gradStartColor?: string;
+	gradHarfColor?: string;
+	gradEndColor?: string;
+}
+
+const {
+	color = 'currentcolor', gradient, icon, size,
+	gradStartColor = 'var(--gradient-stop-1)',
+	gradHarfColor = 'var(--gradient-stop-2)',
+	gradEndColor = 'var(--gradient-stop-3)'
+} = Astro.props;
+const iconPath = iconPaths[icon];
+
+const attrs: HTMLAttributes<'svg'> = {};
+if (size) attrs.style = { '--size': size };
+
+const gradientId = 'icon-gradient-' + Math.round(Math.random() * 10e12).toString(36);
+---
+
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	width="40"
+	height="40"
+	viewBox="0 0 1024 1024"
+	aria-hidden="true"
+	stroke={gradient ? `url(#${gradientId})` : color}
+	fill={gradient ? `url(#${gradientId})` : color}
+	{...attrs}
+>
+	<g set:html={iconPath} scale="0.8"/>
+	{
+		gradient && (
+			<linearGradient
+				id={gradientId}
+				x1="0%"
+				x2="100%"
+				y1="0%"
+				y2="0%"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop stop-color={gradStartColor} />
+				<stop offset=".5" stop-color={gradHarfColor} />
+				<stop offset="1" stop-color={gradEndColor} />
+			</linearGradient>
+		)
+	}
+	<slot/>
+</svg>
+
+<style>
+	svg {
+		vertical-align: middle;
+		width: var(--size, 1em);
+		height: var(--size, 1em);
+	}
+</style>

@@ -1,0 +1,59 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Panel from '@components/Panel.astro';
+import Icon from '@components/Icon.astro';
+import { getContents } from '@utils/content';
+
+const posts = await getContents();
+
+interface Tag {
+  [key: string]: Set<string>;
+}
+
+const types: Tag = {}
+
+posts.forEach(post => {
+	const { tagType, tags } = post.data;
+  if (!types[tagType]) {
+    Object.defineProperty(types, tagType, {
+      value: new Set(),
+      enumerable: true,
+      writable: true
+    });
+  }
+  tags && tags.forEach((tag: any) => types[tagType].add(tag))
+});
+---
+
+<BaseLayout>
+  {
+    Object.keys(types).length > 0 ?
+      Object.entries(types).map(([tagType, tags]) => {
+        return <Panel items={tags.size} title={tagType}>
+            {(
+              <div class="p-4">
+                {
+                  Array.from(tags).map(tag =>
+                    <a href={`/tags/${tag}/`} class="inline-block">
+                      <div class:list={[
+                        'group',
+                        'flex justify-between items-center bg-[--gray-900] gap-2 m-1 px-4 py-1 rounded-md text-sm text-[--gray-0] cursor-pointer',
+                        'hover:scale-[0.98] hover:bg-[--gray-800] hover:border-[--gray-900]'
+                      ]}>
+                        <span>{tag}</span>
+                        <span class="hidden group-hover:inline-block"><Icon icon="goto" /></span>
+                      </div>
+                    </a>
+                  )
+                }
+              </div>
+            )}
+          </Panel>
+      })
+      :
+      <Panel items={0} title="标签" ></Panel>
+  }	
+</BaseLayout>
+
+<style>
+</style>

@@ -1,0 +1,69 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Panel from "@components/Panel.astro";
+import Card from "@components/Card.astro";
+import { defaultCardHeadImg } from '@utils/image'
+
+const defaultPic = await defaultCardHeadImg();
+
+interface SeriesPost {
+  [key: string]: {
+    posts: Array<CollectionEntry<"series">>;
+    pic: string;
+    name: string;
+  };
+}
+
+export const getStaticPaths = (async () => {
+  const posts: CollectionEntry<"series">[] = await getCollection("series");
+  const sPosts: SeriesPost = {};
+  posts.forEach(post => {
+    const series = post.slug.split('/')[0];
+    if (!sPosts[series]) {
+      sPosts[series] = {
+        posts: [],
+        name: post.data.series,
+        pic: ''
+      };
+    }
+    sPosts[series].pic = post.data.headPic || sPosts[series].pic
+    sPosts[series].posts.push(post);
+  })
+  let paths = Object.keys(sPosts).map(se => ({
+    params: { series: `${se}/` }, props: { posts: sPosts[se].posts, name: sPosts[se].name, pic: sPosts[se].pic },
+  }));
+  return paths;
+}) satisfies GetStaticPaths;
+
+type Props = {
+  posts: Array<CollectionEntry<"series">>;
+  name: string;
+  pic: string;
+};
+
+const { posts, name, pic }: Props = Astro.props;
+---
+<BaseLayout>
+  <Panel items={posts.length} title={`合集·${name}`}>
+    {
+      <img class="w-full h-60 md:h-96 rounded object-cover object-center" src={pic || defaultPic.default.src} />
+    }
+    
+    {
+      posts.length > 0 && (
+        posts.map(({data, slug, collection}) => {
+          return <Card
+           title={data.title}
+           description={data.description}
+           date={data.date}
+           tags={data.tags}
+           pic=""
+           href={`/content/${collection}/${slug}`} />
+        })
+      )
+    }
+  </Panel>
+</BaseLayout>

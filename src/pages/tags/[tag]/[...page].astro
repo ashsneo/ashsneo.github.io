@@ -1,0 +1,65 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import { type CollectionEntry } from "astro:content";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { collections } from '@content/config';
+import { getContents } from '@utils/content';
+import Panel from "@components/Panel.astro";
+import Card from "@components/Card.astro";
+import Pagination from "@components/Pagination.astro";
+
+interface SeriesPost {
+  [key: string]: {
+    posts: Array<CollectionEntry<keyof typeof collections>>;
+    tag: string;
+  };
+}
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getContents();
+  const tPosts: SeriesPost = {};
+  posts.forEach(post => {
+    const { tags } = post.data;
+    tags?.forEach((tag: string) => {
+      if (!tPosts[tag]) {
+        tPosts[tag] = {
+          posts: [],
+          tag: tag
+        };
+      }
+      tPosts[tag].posts.push(post);
+    })
+  })
+  let allTags = Object.keys(tPosts).map(tag => {
+    return paginate(tPosts[tag].posts.sort(({data: data1}, {data: data2}) => {
+      return data1.date < data2.date ? 1 : -1;
+    }), { pageSize: 10, params: { tag } });
+  })
+  return allTags.flat();
+}) satisfies GetStaticPaths;
+
+type Props = {
+  page: Page<CollectionEntry<keyof typeof collections>>;
+    tag: string;
+};
+
+const { page }: Props = Astro.props;
+---
+<BaseLayout>
+  <Panel items={page.data.length} title={`标签·${Astro.params.tag}`}>
+    {
+      page.data.length > 0 && page.data.map(({data, slug, collection}) => {
+        return <Card
+          title={data.title}
+          date={data.date}
+          description={data.description}
+          href={`/content/${collection}/${slug}`}
+          // pic={data.headPic}
+          pic=""
+          tags={data.tags} />
+			})
+		}
+  </Panel>
+  <Pagination current={page.currentPage} total={page.lastPage} baseUrl={`/tags/${Astro.params.tag}`} />
+</BaseLayout>

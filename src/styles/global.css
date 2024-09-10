@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'ChunQiu';
+  src: url('/public/font/ChillCalligraphyChunQiu_QiuHong.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Yuji';
+  src: url('/public/font/YujiSyukuStd-R-2.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Global variables */
+:root {
+	/* Colors */
+	--gray-0: #090b11;
+	--gray-50: #141925;
+	--gray-100: #283044;
+	--gray-200: #3d4663;
+	--gray-300: #505d84;
+	--gray-400: #6474a2;
+	--gray-500: #8490b5;
+	--gray-600: #a3acc8;
+	--gray-700: #c3cadb;
+	--gray-800: #e3e6ee;
+	--gray-900: #f3f4f7;
+	--gray-999: #ffffff;
+
+	--rose-0: #f8f3f3;
+	--rose-50: #fff1f2;
+	--rose-100: #ffe4e6;
+	--rose-200: #fecdd3;
+	--rose-300: #fda4af;
+	--rose-400: #fb7185;
+	--rose-500: #f43f5e;
+	--rose-600: #e11d48;
+	--rose-700: #be123c;
+	--rose-800: #9f1239;
+	--rose-900: #881337;
+	--rose-999: #2c010a;
+
+	--accent-light: #61d3f6;
+	--accent-regular: #1188a6;
+	--accent-dark: #003b56;
+	--accent-overlay: hsla(207, 89%, 67%, 0.33);
+	--accent-subtle-overlay: var(--accent-overlay);
+	--accent-text-over: var(--gray-999);
+
+	--link-color: var(--accent-regular);
+
+	/* Gradients */
+	--gradient-stop-1: var(--accent-light);
+	--gradient-stop-2: var(--accent-regular);
+	--gradient-stop-3: var(--accent-dark);
+
+	/* Fonts */
+	--font-system: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	--font-body: 'Yuji', 'ChunQiu', 'Public Sans', var(--font-system);
+
+	/* Transitions */
+	--theme-transition: 0.2s ease-in-out;
+}
+
+:root.theme-dark {
+	--gray-0: #ffffff;
+	--gray-50: #f3f4f7;
+	--gray-100: #e3e6ee;
+	--gray-200: #c3cadb;
+	--gray-300: #a3acc8;
+	--gray-400: #8490b5;
+	--gray-500: #6474a2;
+	--gray-600: #505d84;
+	--gray-700: #3d4663;
+	--gray-800: #283044;
+	--gray-900: #141925;
+	--gray-999-basis: 225, 31%, 5%;
+	--gray-999: #090b11;
+	
+	--rose-0: #2c010a;
+	--rose-50: #881337;
+	--rose-100: #9f1239;
+	--rose-200: #be123c;
+	--rose-300: #e11d48;
+	--rose-400: #f43f5e;
+	--rose-500: #fb7185;
+	--rose-600: #fda4af;
+	--rose-700: #fecdd3;
+	--rose-800: #ffe4e6;
+	--rose-900: #fff1f2;
+	--rose-999: #f8f3f3;
+
+	--accent-light: #003b56;
+	--accent-regular: #1188a6;
+	--accent-dark: #61d3f6;
+	--accent-overlay: hsla(280, 89%, 67%, 0.33);
+	--accent-subtle-overlay: hsla(207, 81%, 36%, 0.33);
+	--accent-text-over: var(--gray-0);
+
+	--link-color: var(--accent-dark);
+
+	--gradient-stop-1: #4c11c6;
+
+}
+
+html,
+body {
+	min-width: 200px;
+	min-height: 100dvh;
+}
+
+* {
+	@apply break-all;
+}
+
+body {
+	background-color: var(--gray-999);
+	color: var(--gray-0);
+	font-family: var(--font-body);
+	-webkit-font-smoothing: antialiased;
+	line-height: 1.5;
+}
+
+main {
+	@apply text-sm;
+	margin: auto;
+	padding: 1rem;
+	width: 1000px;
+	max-width: calc(100% - 2rem);
+	/* font-size: 20px; */
+	line-height: 1.6;
+}
+
+a {
+	color: var(--link-color);
+}

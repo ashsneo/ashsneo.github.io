@@ -1,0 +1,42 @@
+---
+// import Icon from "@components/Icon.astro";
+
+interface Props {
+  current: number;
+  total: number;
+  baseUrl: string;
+}
+
+const { current, total, baseUrl }: Props = Astro.props;
+---
+<div class:list={[
+  'pagination flex justify-between w-full gap-8 p-4',
+  `${total > 1 ? '' : 'hidden'}`
+]}>
+  <!-- {
+    current !== 1 && (
+      <a href={`${baseUrl}/`}><Icon icon="first" size="2rem" /></a>
+    )
+  } -->
+  <a href={current > 1 ? `${baseUrl}/${current - 1 > 1 ? current - 1 : ''}` : 'javascript:void(0)'} class:list={[
+    'text-xl',
+    `${current === 1 ? 'cursor-not-allowed text-[--gray-400]' : 'cursor-pointer'}`
+  ]}>上一页</a>
+  <div class="text-xl text-[--gray-300]">第{current}/{total}页</div>
+  <a href={current < total ? `${baseUrl}/${current + 1}` : 'javascript:void(0)'} class:list={[
+    'text-xl',
+    `${current === total ? 'cursor-not-allowed text-[--gray-400]' : 'cursor-pointer'}`
+  ]}>下一页</a>
+  <!-- {
+    current !== total && (
+      <a href={`${baseUrl}/${total}`}><Icon icon="last" size="2rem" /></a>
+    )
+  } -->
+  
+</div>
+
+<style>
+  .pagination svg {
+    cursor: pointer;
+  }
+</style>

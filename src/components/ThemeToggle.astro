@@ -1,0 +1,70 @@
+---
+import Icon from '@components/Icon.astro';
+import { iconPaths } from '@components/IconPaths';
+
+interface Mode {
+	name: 'light' | 'dark';
+	icon: keyof typeof iconPaths;
+}
+const modes: Mode[] = [
+	{ name: 'light', icon: 'sun' },
+	{ name: 'dark', icon: 'moon-stars' },
+];
+---
+
+<theme-toggle>
+	<button class="flex border-0 p-0 rounded-full bg-[--gray-999] cursor-pointer shadow shadow-[--accent-overlay]">
+		<span class="sr-only">Dark theme</span>
+		{
+			modes.map(mode => (
+				<span class:list={[
+					'icon z-10 relative p-2 w-8 h-8 text-base tx-[--accent-text-over]',
+					`${mode.name}`,
+					'before:content before:-z-10 before:absolute before:inset-0 before:rounded-full before:border-[1px]',
+					`${mode.name === 'light' ? 'flex dark:hidden' : 'hidden dark:flex'}`,
+					`${mode.name === 'light' ? 'forced-colors:before:bg-current': ''}`,
+					// `motion-safe:before:transition-transform motion-safe:before:ease-in-out`,
+					// `${mode.name === 'light' ? 'dark:before:translate-x-full': 'before:translate-x-full'}`,
+					// `${mode.name === 'light' ? 'before:content before:-z-10 before:absolute before:inset-0 before:bg-[--accent-regular] before:rounded-full': ''}`,
+				]}>
+					<Icon icon={mode.icon} />
+				</span>
+			))
+		}
+	</button>
+</theme-toggle>
+
+<script>
+	class ThemeToggle extends HTMLElement {
+		constructor() {
+			super();
+
+			const button = this.querySelector('button')!;
+
+			/** Set the theme to dark/light mode. */
+			const setTheme = (dark: boolean) => {
+
+				document.documentElement.classList[dark ? 'add' : 'remove']('theme-dark');
+				button.setAttribute('aria-pressed', String(dark));
+
+        // set html attribute data-theme
+        document.documentElement.setAttribute(
+          'data-theme',
+          dark ? 'dark' : 'light'
+        )
+        localStorage.setItem('theme', dark ? 'dark' : 'light')
+			};
+
+			// Toggle the theme when a user clicks the button.
+			button.addEventListener('click', () => setTheme(!this.isDark()));
+
+			// Initialize button state to reflect current theme.
+			setTheme(this.isDark());
+		}
+
+		isDark() {
+			return document.documentElement.classList.contains('theme-dark');
+		}
+	}
+	customElements.define('theme-toggle', ThemeToggle);
+</script>

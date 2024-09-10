@@ -1,0 +1,73 @@
+<!-- 半成品，不要使用 -->
+---
+interface Props {
+  content: string;
+  // max-line
+  line?: number;
+  // custom font-color font-size
+  className?: string;
+}
+
+const { content, line, className }: Props = Astro.props;
+---
+<auto-span data-line={line}  class:list={[
+  className,
+  'block'
+]}>
+    {content}
+</auto-span>
+
+<script>
+  class AutoSpan extends HTMLElement {
+    constructor() {
+      super();
+      this.addEllipsis(this, this.dataset.line ? parseInt(this.dataset.line) : NaN);
+    }
+
+    realScrollHeight(element: HTMLElement) {
+      const { paddingTop, paddingBottom } = getComputedStyle(element);
+      return element.scrollHeight - parseFloat(paddingTop) - parseFloat(paddingBottom);
+    }
+
+    addEllipsis(element: HTMLElement, maxLines: number) {
+      const { height, maxHeight, lineHeight } = getComputedStyle(element);
+      const textareaHeight = parseFloat(height) || parseFloat(maxHeight);
+      const text = element.innerText;
+
+      const finalMaxHeight = Math.min(maxLines * parseFloat(lineHeight) || Number.MAX_VALUE, textareaHeight);
+
+      // console.log('paddingTop-'+paddingTop+' paddingBottom-'+paddingBottom+' height-'+height+' maxHeight-'+maxHeight+' lineHeight-'+lineHeight+' textareaHeight-'+textareaHeight+' finalMaxHeight-'+finalMaxHeight);
+
+      let start = 0, end = text.length, mid;
+      let maxCircul: number = 50, signal: number = 50;
+
+      if (this.realScrollHeight(element) > finalMaxHeight) {
+        while (start < end && signal > 0) {
+          mid = Math.floor((start + end) / 2);
+          element.innerText = text.slice(0, mid) + '...';
+
+          if (this.realScrollHeight(element) > finalMaxHeight) {
+            end = mid - 1;
+          } else {
+            start = mid + 1;
+          }
+
+          signal--;
+        }
+
+        // Fine-tune the truncation
+        element.innerText = text.slice(0, end) + '...';
+        signal = maxCircul;
+        while (this.realScrollHeight(element) > finalMaxHeight && signal > 0) {
+          end -= 1;
+          element.innerText = text.slice(0, end) + '...';
+          signal--;
+        }
+      }
+
+      signal = maxCircul;
+    }
+  }
+
+  customElements.define('auto-span', AutoSpan);
+</script>

@@ -1,0 +1,50 @@
+---
+import Icon from '@components/Icon.astro'
+import { iconPaths } from '@components/IconPaths';
+
+interface Props {
+  items: number;
+  col?: 0 | 1 | 2 | 3;
+  title: string;
+  tIcon?: keyof typeof iconPaths;
+  tIconColor?: string;
+  moreHref?: string;
+}
+
+const { items = 0, col = 0, title, tIcon, tIconColor, moreHref }: Props = Astro.props;
+---
+<div class="mt-5 first:mt-0">
+  <div class="flex justify-between p-1 text-2xl text-[--gray-0]">
+    <span class="flex items-center">
+      {
+        tIcon && (
+          <Icon icon={tIcon} size="1.2em" color={tIconColor} />
+        )
+      }
+      {title}
+    </span>
+    {
+      moreHref && (
+        <a href={moreHref}>更多》</a>
+      )
+    }
+  </div>
+  <div class:list={[
+    'grid grid-flow-rol gap-4 grid-cols-1',
+    {
+      'md:grid-cols-2': col >= 2 && items >= 2,
+      'lg:grid-cols-3': col === 3 && items > 3
+    }
+  ]}>
+    {
+      items > 0 ?
+      <slot />
+      :
+      (
+        <p class="flex flex-col items-center justify-center p-10 border-2 rounded border-[--gray-900] bg-[--gray-900]">
+          <Icon icon="nothing" size="1.2em" />There is nothing
+        </p>
+      )
+    }
+  </div>
+</div>

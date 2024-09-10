@@ -1,0 +1,63 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import { getCollection } from "astro:content";
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Pagination from "@components/Pagination.astro";
+import Panel from "@components/Panel.astro";
+import Icon from "@components/Icon.astro";
+
+// type CollectionNames = "series" as keyof typeof collections;
+type CollectionEntry = {
+  data: {
+    [key: string]: any;
+  };
+  slug: string;
+};
+
+type SeriesData = {
+  name: string;
+  href: string;
+};
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts: CollectionEntry[] = await getCollection("series");
+  const series: SeriesData[] = posts.map(post => {
+    return {
+      name: post.data.series,
+      href: `/series/${post.slug.split('/')[0]}/`
+    }
+  }).filter(series => series);
+  const distinctSeries = Array.from(new Set(series.map(s => s.name))).map(name => 
+    series.find(s => s.name === name)
+  ).filter(series => series) as SeriesData[];
+
+  return paginate(
+    distinctSeries,
+    { pageSize: 10 }
+  );
+}) satisfies GetStaticPaths;
+
+type Props = {
+  page: Page<SeriesData>;
+};
+
+const { page }: Props = Astro.props;
+---
+<BaseLayout>
+  <Panel items={page.data.length} title="合集">
+    {
+      page.data.length > 0 && page.data.map(({name, href}) => {
+        return <a class:list={[
+          'group',
+          'flex justify-between items-center gap-5 m-1 px-10 py-10 border-[1px] rounded-md shadow border-[--gray-800] text-xl text-[--gray-0] cursor-pointer',
+          'hover:scale-[.98] hover:bg-[--gray-800] hover:border-[--gray-900]',
+        ]} href={href}>
+          <span class="text-wrap break-all">{name}</span>
+          <span class="hidden group-hover:inline-block"><Icon icon="goto" /></span>
+        </a>
+			})
+		}
+  </Panel>
+  <Pagination current={page.currentPage} total={page.lastPage} baseUrl="/series" />
+</BaseLayout>

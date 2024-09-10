@@ -1,0 +1,28 @@
+---
+import Icon from '@components/Icon.astro';
+import buldWithAstro from '@assets/image/common/astro.svg';
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="flex flex-col md:flex-row justify-between gap-12 px-4 py-12 max-w-[1024px] m-auto text-[--gray-200] text-sm">
+	<div class="flex items-center justify-center gap-2">
+		<img src={buldWithAstro.src} alt="Built with Astro" width="120" height="20">
+		@ {currentYear} Neo
+	</div>
+	<p class="flex flex-col md:flex-row flex-wrap justify-center md:justify-end gap-4">
+		<a class="flex items-center justify-center gap-1 text-[--gray-200]" href="https://github.com/ashsneo" target="_blank"><Icon icon="github" /> GitHub</a>
+		<a class="flex items-center justify-center gap-1 text-[--gray-200]" href="mailto:wizardycc@163.com"><Icon icon="email" /> Email</a>
+	</p>
+</footer>
+<style>
+	footer a {
+		text-decoration: 1px solid underline transparent;
+		text-underline-offset: 0.25em;
+		transition: text-decoration-color var(--theme-transition);
+	}
+	footer a:hover,
+	footer a:focus {
+		text-decoration-color: currentColor;
+	}
+</style>
