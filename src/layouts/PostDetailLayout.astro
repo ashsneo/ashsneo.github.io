@@ -16,7 +16,6 @@ const { title, date, tags, readingTime, words }: Props = Astro.props;
 <BaseLayout>
 	<script
 		is:inline
-		async
 		src="https://cdn.jsdelivr.net/npm/twikoo@1.6.36/dist/twikoo.all.min.js"
 		integrity="sha384-4KfOjEinLSkv1i1J8TzlkC/RTnuiLoR1OLerVgjEKoH5djYtbf7mzEFsz9p3nfuA"
 		crossorigin="anonymous">
@@ -56,6 +55,7 @@ const { title, date, tags, readingTime, words }: Props = Astro.props;
 				>
 					<slot />
 				</article>
+				<hr class="my-12" />
 				<div id="tcomment"></div>
 				<script>
 					// @ts-ignore
