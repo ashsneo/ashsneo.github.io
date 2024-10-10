@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import expressiveCode from "astro-expressive-code";
 import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs';
+import vue from '@astrojs/vue';
 
 // https://astro.build/config
 export default defineConfig({
@@ -23,7 +24,8 @@ export default defineConfig({
         codePaddingInline: "1rem",
         codeFontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;'
       }
-    })
+    }),
+    vue()
   ],
   markdown: {
     shikiConfig: {

@@ -2,20 +2,42 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "baseUrl": "src",
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "paths": {
-      "@assets/*": ["assets/*"],
-      "@config": ["config.ts"],
-      "@types": ["types.ts"],
-      "@components/*": ["components/*"],
-      "@content/*": ["content/*"],
-      "@layouts/*": ["layouts/*"],
-      "@pages/*": ["pages/*"],
-      "@styles/*": ["styles/*"],
-      "@utils/*": ["utils/*"],
-      "@plugins/*": ["plugins/*"]
+      "@assets/*": [
+        "assets/*"
+      ],
+      "@config": [
+        "config.ts"
+      ],
+      "@types": [
+        "types.ts"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@content/*": [
+        "content/*"
+      ],
+      "@layouts/*": [
+        "layouts/*"
+      ],
+      "@pages/*": [
+        "pages/*"
+      ],
+      "@styles/*": [
+        "styles/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ],
+      "@plugins/*": [
+        "plugins/*"
+      ]
     },
-    "types": ["astro/client"],
+    "types": [
+      "astro/client"
+    ],
     "strictNullChecks": true
   }
 }

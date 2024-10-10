@@ -3,8 +3,7 @@ import { type CollectionEntry } from "astro:content";
 
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Hero from "@components/Hero.astro";
-import Card from '@components/Card.astro';
-import Panel from '@components/Panel.astro';
+import VueIndex from '@components/vue/Index.vue'
 import { collections } from '@content/config';
 import { getContents } from '@utils/content';
 
@@ -14,61 +13,11 @@ type Post = CollectionEntry<keyof typeof collections> & {
 
 const posts = await getContents();
 
-const maxPostNum = 10;
-
-const tops: Post[] = [];
-const newPosts: Post[] = [];
-
-posts.sort(({data: data1}, {data: data2}) => {
-	return data1.date < data2.date ? 1 : -1;
-}).forEach((post) => {
-	const { top, topTo } = post.data;
-	const result = {
-		...post,
-		href: `/content/${post.collection}/${post.slug}`
-	}
-	if (top && Date.parse(topTo) > Date.now()) {
-		tops.push(result);
-	} else {
-		if (newPosts.length < maxPostNum) {
-			newPosts.push(result);
-		}
-	}
-});
 ---
 
 <BaseLayout>
 	<Hero />
-	<Panel items={tops.length} col={3} title="置顶" tIcon="hot" tIconColor="var(--rose-400)">
-		{
-			tops.length > 0 &&
-			(
-				tops.map(({data, href}) => {
-				return <Card directionRow={false}
-				  title={data.title}
-				  date={data.date}
-					description={data.description}
-					href={href}
-					pic={data.headPic}
-					tags={data.tags} />
-			}))
-		}
-	</Panel>
-	<Panel items={newPosts.length} title="最新文章" moreHref=`${newPosts.length > maxPostNum ? "/docs/" : ""}`>
-		{
-			newPosts.length > 0 &&
-			(
-				newPosts.map(({data, href}) => {
-					return <Card title={data.title}
-					  date={data.date}
-					  description={data.description}
-						href={href}
-						// pic={data.headPic}
-						pic=""
-						tags={data.tags} />
-			}))
-		}
-	</Panel>
+	<VueIndex client:load posts={posts} />
 </BaseLayout>
 
 <style>
